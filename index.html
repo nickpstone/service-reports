@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#12a9b4"><title>Vet1 Service Reports</title>
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg">
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<style>
+:root{--teal:#10a7b2;--deep:#087d88;--ink:#17323a;--muted:#678089;--pale:#e9f8f9;--line:#cbe8ea;--white:#fff;--shadow:0 14px 40px #0a65731c}
+*{box-sizing:border-box}body{margin:0;font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;background:#f4fbfb;color:var(--ink)}
+header{background:linear-gradient(120deg,#fff 0 58%,#dff7f8);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:4}
+.top{max-width:1180px;margin:auto;padding:14px 22px;display:flex;align-items:center;gap:14px}.brand{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--teal);color:white;font-weight:900;font-size:20px}.brand b{font-size:20px}.brand small{display:block;color:var(--muted)}.top button{margin-left:auto}
+main{max-width:1180px;margin:24px auto;padding:0 20px 70px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(330px,.8fr);gap:22px}
+.card{background:white;border:1px solid #dceff0;border-radius:20px;box-shadow:var(--shadow);padding:22px;margin-bottom:18px}h2{margin:0 0 16px;font-size:18px}h3{font-size:14px;margin:18px 0 8px;color:var(--deep);text-transform:uppercase;letter-spacing:.06em}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.wide{grid-column:1/-1}label{display:block;font-weight:700;font-size:12px;margin-bottom:5px;color:#47626a}
+input,select,textarea{width:100%;border:1px solid #c8e0e2;border-radius:11px;padding:11px 12px;background:#fbfefe;color:var(--ink);font:inherit;outline:none}textarea{min-height:92px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px #10a7b21b}
+.chips{display:flex;flex-wrap:wrap;gap:7px}.chip{border:1px solid #b9dfe2;background:#f6ffff;border-radius:999px;padding:7px 10px;cursor:pointer;font-size:13px}.chip.on{background:var(--teal);border-color:var(--teal);color:#fff}
+button{border:0;border-radius:11px;padding:11px 15px;font-weight:800;cursor:pointer}.primary{background:var(--teal);color:white}.secondary{background:var(--pale);color:var(--deep)}.danger{background:#fff1f1;color:#a33}
+.actions{display:flex;gap:9px;flex-wrap:wrap}.preview{position:sticky;top:96px}.sheet{aspect-ratio:210/297;background:white;border:1px solid #d8e6e7;box-shadow:0 12px 34px #17323a20;padding:8%;font-size:11px;overflow:hidden}.sheet-head{display:flex;align-items:center;gap:12px;border-bottom:7px solid var(--teal);padding-bottom:10px;margin-bottom:12px}.sheet-logo{width:44px;height:44px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;font-weight:900}.sheet-title{font-size:15px;font-weight:900}.row{display:grid;grid-template-columns:35% 65%;padding:5px 0;border-bottom:1px solid #dcebed}.row b{color:#50676d}.section{margin-top:10px;font-weight:900;color:var(--deep)}.photos{display:grid;grid-template-columns:repeat(2,1fr);gap:5px;margin-top:6px}.photos img{width:100%;height:80px;object-fit:cover;border-radius:4px}.hint{font-size:12px;color:var(--muted);margin-top:6px}.status{font-size:12px;color:var(--deep);font-weight:700}
+@media(max-width:850px){main{grid-template-columns:1fr}.preview{position:static}.grid{grid-template-columns:1fr}.wide{grid-column:auto}.top{padding:10px 14px}.brand small{display:none}}
+</style></head>
+<body><header><div class="top"><div class="brand"><div class="logo">V1</div><div><b>Vet1 Service Reports</b><small>Fast equipment service & repair reporting</small></div></div><button class="secondary" id="installBtn" hidden>Install App</button></div></header>
+<main><section>
+<div class="card"><h2>Clinic & equipment</h2><div class="grid">
+<div class="wide"><label>Clinic</label><input id="clinic" list="clinicList" placeholder="Search historical clinics or type a new clinic"><datalist id="clinicList"></datalist><div class="hint">New clinic names are remembered on this device.</div></div>
+<div><label>Phone</label><input id="phone" inputmode="tel"></div><div><label>Email</label><input id="email" type="email"></div>
+<div><label>Machine / Model</label><select id="model"></select></div><div><label>Serial Number</label><input id="serial"></div>
+<div class="wide"><label>Included Accessories</label><input id="accessories" placeholder="e.g. clamp and cable"></div>
+</div></div>
+<div class="card"><h2>Reported issue</h2><div id="issueChips" class="chips"></div><h3>Custom / additional issue</h3><textarea id="issue" placeholder="What was reported by the clinic?"></textarea></div>
+<div class="card"><h2>Work completed</h2><div id="actionChips" class="chips"></div><h3>Report wording</h3><textarea id="work" placeholder="Selected actions appear here. Edit freely."></textarea>
+<h3>Testing</h3><div id="testChips" class="chips"></div><textarea id="tests" placeholder="Test results / measurements"></textarea></div>
+<div class="card"><h2>Completion</h2><div class="grid">
+<div><label>Technician</label><select id="tech"><option>Nick Stone</option><option>Tony Roberts</option><option>Other</option></select></div><div><label>Date Completed</label><input id="date" type="date"></div>
+<div><label>Next Service Due</label><input id="due" type="month"></div><div><label>Status</label><select id="status"><option>Service completed</option><option>Repair completed</option><option>Assessment only</option><option>Replacement recommended</option><option>Awaiting parts</option></select></div>
+<div class="wide"><label>Notes</label><textarea id="notes"></textarea></div>
+<div class="wide"><label>Photos</label><input id="photoInput" type="file" accept="image/*" capture="environment" multiple><div class="hint">Add photos from the phone camera or photo library. Up to 4 are included in the PDF.</div></div>
+</div></div>
+<div class="card"><div class="actions"><button class="primary" id="pdfBtn">Save PDF</button><button class="secondary" id="clearBtn">New Report</button></div><div class="status" id="msg"></div></div>
+</section>
+<aside class="preview"><div class="card"><h2>Live report preview</h2><div class="sheet" id="sheet"></div></div></aside>
+</main><script src="app.js"></script></body></html>
